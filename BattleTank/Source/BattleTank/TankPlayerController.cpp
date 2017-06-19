@@ -57,7 +57,7 @@ bool ATankPlayerController::GetLookDirection(const int32 &ViewportSizeX, const i
 		WorldDirection
 	);
 	//Log out world direction; Ignore World Location (Camera location)
-	//UE_LOG(LogTemp, Warning, TEXT("Crosshair Direction: %s"), *WorldDirection.ToString())
+	UE_LOG(LogTemp, Warning, TEXT("Crosshair Direction: %s"), *WorldDirection.ToString())
 	return bDeprojectionSuccesful;
 }
 
