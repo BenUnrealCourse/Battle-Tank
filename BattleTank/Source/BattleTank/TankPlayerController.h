@@ -22,6 +22,10 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere)
+	float LineTraceMaxReach = 1000000.f;
+
+
 private:
 	UPROPERTY(EditAnywhere)
 	float CrosshairXLocation = 0.5f;
@@ -34,5 +38,9 @@ private:
 
 	//Return an OUT param, true if it hit landscape
 	bool GetSightRayHitLocation(FVector& HitLocation) const;
-	bool GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation) const;
+
+	bool GetLookVectorHitLocation(FVector &LookDirection, FHitResult &Hit) const;
+
+	bool GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation, FVector& LookDirection) const;
+
 };
