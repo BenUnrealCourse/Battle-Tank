@@ -19,6 +19,7 @@ void ATankPlayerController::BeginPlay()
 
 void ATankPlayerController::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
 	AimTowardsCrosshair();
 }
 
@@ -31,6 +32,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 {
 	FVector HitLocation;
 	GetSightRayHitLocation(HitLocation);
+	GetControlledTank()->AimAt(HitLocation);
 }
 
 bool ATankPlayerController::GetSightRayHitLocation(FVector & HitLocation) const
@@ -46,8 +48,24 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector & HitLocation) const
 
 	//Line Trace along look direction until line trace reach max
 	FHitResult Hit;
+	bool bLineTraceSuccess = GetLookVectorHitLocation(LookDirection, Hit);
 	HitLocation = Hit.Location;
-	return GetLookVectorHitLocation(LookDirection, Hit);
+	return bLineTraceSuccess;
+}
+
+bool ATankPlayerController::GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation, FVector& LookDirection) const
+{
+	FVector2D(ViewportSizeX * CrosshairXLocation, ViewportSizeY * CrosshairYLocation);
+	//UE_LOG(LogTemp, Warning, TEXT("Crosshair screen큦 position : %s"), *ScreenLocation.ToString())
+	//"De-Project" crosshairs큦creen position to game world position
+	FVector WorldLocation; //To be discarded : Camera큦 position
+	bool bDeprojectionSuccesful = DeprojectScreenPositionToWorld(
+		ScreenLocation.X,
+		ScreenLocation.Y,
+		WorldLocation,
+		LookDirection
+	);
+	return bDeprojectionSuccesful;
 }
 
 bool ATankPlayerController::GetLookVectorHitLocation(FVector &LookDirection, FHitResult &Hit) const
@@ -62,24 +80,9 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector &LookDirection, FHi
 	);
 	if (bLineTraceSuccess)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("Crosshair Hit Location : %s"),*(Hit.Location.ToString()))
+		//UE_LOG(LogTemp,Warning,TEXT("Crosshair Hit Location : %s"),*(Hit.Location.ToString()))
 	}
 	return bLineTraceSuccess;
-}
-
-bool ATankPlayerController::GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation, FVector& LookDirection) const
-{
-	FVector2D(ViewportSizeX * CrosshairXLocation, ViewportSizeY * CrosshairYLocation);
-	//UE_LOG(LogTemp, Warning, TEXT("Crosshair screen큦 position : %s"), *ScreenLocation.ToString())
-	//"De-Project"screen position of crosshair to game world
-	FVector WorldLocation; //To be discarded : Camera큦 position
-	bool bDeprojectionSuccesful = DeprojectScreenPositionToWorld(
-		ScreenLocation.X,
-		ScreenLocation.Y,
-		WorldLocation,
-		LookDirection
-	);
-	return bDeprojectionSuccesful;
 }
 
 
