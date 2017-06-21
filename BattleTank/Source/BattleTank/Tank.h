@@ -22,6 +22,7 @@ protected:
 
 	UTankAimingComponent* TankAimingComponent = nullptr;
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -31,5 +32,6 @@ public:
 
 	void AimAt(FVector HitLocation);
 	
-	
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void SetBarrelReference(UStaticMeshComponent* BarrelToSet);
 };
