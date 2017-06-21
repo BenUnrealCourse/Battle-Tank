@@ -30,10 +30,13 @@ ATank* ATankPlayerController::GetControlledTank() const
 void ATankPlayerController::AimTowardsCrosshair()
 {
 	FVector HitLocation;
-	GetSightRayHitLocation(HitLocation);
+	if (GetSightRayHitLocation(HitLocation))
+	{
+		GetControlledTank()->AimAt(HitLocation);
+	}
 }
 
-bool ATankPlayerController::GetSightRayHitLocation(FVector & HitLocation) const
+bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) const
 {
 	//Find Crosshair position in pixel coordinates
 	int32 ViewportSizeX, ViewportSizeY;
@@ -46,28 +49,12 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector & HitLocation) const
 
 	//Line Trace along look direction until line trace reach max
 	FHitResult Hit;
-	HitLocation = Hit.Location;
-	return GetLookVectorHitLocation(LookDirection, Hit);
+	bool bLineTracingSuccess = GetLookVectorHitLocation(LookDirection, Hit);
+	OutHitLocation = Hit.Location;
+	return bLineTracingSuccess;
 }
 
-bool ATankPlayerController::GetLookVectorHitLocation(FVector &LookDirection, FHitResult &Hit) const
-{
-	FVector StartLocation = PlayerCameraManager->GetCameraLocation();
-	FVector EndLocation = StartLocation + LookDirection * LineTraceMaxReach;
-	bool bLineTraceSuccess = GetWorld()->LineTraceSingleByChannel(
-		Hit,
-		StartLocation,
-		EndLocation,
-		ECollisionChannel::ECC_Visibility
-	);
-	if (bLineTraceSuccess)
-	{
-		UE_LOG(LogTemp,Warning,TEXT("Crosshair Hit Location : %s"),*(Hit.Location.ToString()))
-	}
-	return bLineTraceSuccess;
-}
-
-bool ATankPlayerController::GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation, FVector& LookDirection) const
+bool ATankPlayerController::GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation, FVector& OutLookDirection) const
 {
 	FVector2D(ViewportSizeX * CrosshairXLocation, ViewportSizeY * CrosshairYLocation);
 	//UE_LOG(LogTemp, Warning, TEXT("Crosshair screen´s position : %s"), *ScreenLocation.ToString())
@@ -77,9 +64,27 @@ bool ATankPlayerController::GetLookDirection(const int32 &ViewportSizeX, const i
 		ScreenLocation.X,
 		ScreenLocation.Y,
 		WorldLocation,
-		LookDirection
+		OutLookDirection
 	);
 	return bDeprojectionSuccesful;
 }
+
+bool ATankPlayerController::GetLookVectorHitLocation(FVector& LookDirection, FHitResult& OutHit) const
+{
+	FVector StartLocation = PlayerCameraManager->GetCameraLocation();
+	FVector EndLocation = StartLocation + LookDirection * LineTraceMaxReach;
+	bool bLineTraceSuccess = GetWorld()->LineTraceSingleByChannel(
+		OutHit,
+		StartLocation,
+		EndLocation,
+		ECollisionChannel::ECC_Visibility
+	);
+	if (bLineTraceSuccess)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Crosshair Hit Location : %s"),*(OutHit.Location.ToString()))
+	}
+	return bLineTraceSuccess;
+}
+
 
 
