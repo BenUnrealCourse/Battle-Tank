@@ -81,7 +81,7 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector& LookDirection, FHi
 	);
 	if (bLineTraceSuccess)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("Crosshair Hit Location : %s"),*(OutHit.Location.ToString()))
+		//UE_LOG(LogTemp,Warning,TEXT("Crosshair Hit Location : %s"),*(OutHit.Location.ToString()))
 	}
 	return bLineTraceSuccess;
 }
