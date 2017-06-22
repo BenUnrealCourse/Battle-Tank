@@ -3,7 +3,9 @@
 #include "TankAimingComponent.h"
 #include "Components/ActorComponent.h"
 #include "Components/StaticMeshComponent.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
+#include "TankBarrel.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -26,6 +28,7 @@ void UTankAimingComponent::BeginPlay()
 }
 
 
+
 // Called every frame
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -34,14 +37,48 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation)
+void UTankAimingComponent::AimAt(FVector HitLocation,float TossSpeed)
 {
-	FString TankName = GetOwner()->GetName();
-	auto BarrelLocation = Barrel->GetComponentLocation();
-	UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s from %s"), *TankName, *(HitLocation.ToString()),*(BarrelLocation.ToString()))
+	if (!Barrel) { return; }
+	FVector OutTossVelocity;
+	auto StartLocation = Barrel->GetSocketLocation(FName("Projectile")); //It returns barrel location in case of not finding socket name
+	//Calculate the velocity
+	bool bCalculationSucceded = UGameplayStatics::SuggestProjectileVelocity(
+		this,
+		OutTossVelocity,
+		StartLocation,
+		HitLocation,
+		TossSpeed,
+		false,
+		0,
+		0,
+		ESuggestProjVelocityTraceOption::DoNotTrace
+	);
+	if (bCalculationSucceded)
+	{
+		auto AimDirection = OutTossVelocity.GetSafeNormal();
+		MoveBarrelTowards(AimDirection);
+		auto Time = GetWorld()->GetTimeSeconds();
+		UE_LOG(LogTemp, Warning, TEXT("%f:Aim Solution Found"))
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Aim calculation not succeded"))
+	}
+	
 }
 
-void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent * BarrelToSet)
+void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
+{
+	//Get Difference between barrel rotation and aim rotation
+	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
+	auto AimDirectionRotator = AimDirection.Rotation();
+	auto DeltaRotator = AimDirectionRotator - BarrelRotator;
+	//Move the barrel this amount this frame
+	//Considering frame time and elevation speed
+	Barrel->Elevate(DeltaRotator.Pitch);
+}
+void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
 {
 	Barrel = BarrelToSet;
 }
