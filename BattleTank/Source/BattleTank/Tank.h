@@ -18,14 +18,8 @@ public:
 	// Sets default values for this pawn's properties
 	ATank();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UTankAimingComponent* TankAimingComponent = nullptr;
-
-
-public:	
+	UPROPERTY(EditAnywhere, Category = Firing)
+	float TossSpeed = 10000; //TODO Find ideal speed after tweaking
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -38,6 +32,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetTurretReference(UTankTurret* TurretToSet);
 
-	UPROPERTY(EditAnywhere, Category = Firing)
-	float TossSpeed = 10000; //TODO Find ideal speed after tweaking
+	UFUNCTION(BlueprintCallable)
+	void Fire();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	UTankAimingComponent* TankAimingComponent = nullptr;
+
+
 };

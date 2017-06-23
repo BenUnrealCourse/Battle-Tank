@@ -61,11 +61,11 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float TossSpeed)
 		MoveBarrelTowards(AimDirection);
 		MoveTurretTowards(AimDirection);
 		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f:Aim Solution Found"))
+		//UE_LOG(LogTemp, Warning, TEXT("%f:Aim Solution Found"))
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Aim calculation not succeded"))
+		//UE_LOG(LogTemp, Warning, TEXT("Aim calculation not succeded"))
 	}
 	
 }
@@ -89,7 +89,7 @@ void UTankAimingComponent::MoveTurretTowards(FVector AimDirection)
 	auto DeltaRotator = AimDirectionRotator - TurretRotator;
 	//Move the Turret this amount this frame
 	
-	Turret->MoveTurret(DeltaRotator.Yaw);
+	Turret->Rotate(DeltaRotator.Yaw);
 }
 
 void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
