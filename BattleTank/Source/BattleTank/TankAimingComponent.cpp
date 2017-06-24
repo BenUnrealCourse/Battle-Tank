@@ -59,7 +59,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float TossSpeed)
 	{
 		auto AimDirection = OutTossVelocity.GetSafeNormal();
 		MoveBarrelTowards(AimDirection);
-		MoveTurretTowards(AimDirection);
+		MoveTurretTowards(AimDirection); // TODO Fix: Turret and barrel trembles when crosshair is near barrel
 		auto Time = GetWorld()->GetTimeSeconds();
 		//UE_LOG(LogTemp, Warning, TEXT("%f:Aim Solution Found"))
 	}
@@ -88,7 +88,6 @@ void UTankAimingComponent::MoveTurretTowards(FVector AimDirection)
 	auto AimDirectionRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimDirectionRotator - TurretRotator;
 	//Move the Turret this amount this frame
-	
 	Turret->Rotate(DeltaRotator.Yaw);
 }
 

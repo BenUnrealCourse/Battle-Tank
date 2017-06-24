@@ -3,12 +3,14 @@
 #include "Tank.h"
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
+#include "Projectile.h"
+#include "Engine/World.h"
 
 
 // Sets default values
 ATank::ATank()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	TankAimingComponent = CreateDefaultSubobject <UTankAimingComponent>(FName("Aiming Component"));
 
@@ -37,6 +39,7 @@ void ATank::AimAt(FVector HitLocation)
 void ATank::SetBarrelReference(UTankBarrel * BarrelToSet)
 {
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
+	Barrel = BarrelToSet;
 }
 
 void ATank::SetTurretReference(UTankTurret * TurretToSet)
@@ -47,5 +50,12 @@ void ATank::SetTurretReference(UTankTurret * TurretToSet)
 void ATank::Fire()
 {
 	UE_LOG(LogTemp,Warning,TEXT("%s is Firing!"),*(GetName()))
+	if (!Barrel) { return; }
+	//Spawn Projectile
+	GetWorld()->SpawnActor<AProjectile>(
+		ProjectileBlueprint,
+		Barrel->GetSocketLocation(FName("Projectile")),
+		FRotator(0)
+		);
 }
 
