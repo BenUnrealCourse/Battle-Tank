@@ -52,5 +52,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	UTankMovementComponent* TankMovementComponent = nullptr;
 
+	UPROPERTY(EditDefaultsOnly)
+	float TimeToReloadInSeconds = 3;
+	
+	float LastTimeFire;
+
 
 };
