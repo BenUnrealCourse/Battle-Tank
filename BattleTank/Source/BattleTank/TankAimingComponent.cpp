@@ -61,11 +61,9 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float TossSpeed)
 		MoveBarrelTowards(AimDirection);
 		MoveTurretTowards(AimDirection); // TODO Fix: Turret and barrel trembles when crosshair is near barrel
 		auto Time = GetWorld()->GetTimeSeconds();
-		//UE_LOG(LogTemp, Warning, TEXT("%f:Aim Solution Found"))
 	}
 	else
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Aim calculation not succeded"))
 	}
 	
 }

@@ -16,19 +16,15 @@ void ATankAIController::BeginPlay()
 	Super::BeginPlay();
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	auto ControlledTank = GetControlledTank();
-	if (ControlledTank)
-	{
-		UE_LOG ( LogTemp, Warning , TEXT("%s is possessed by TankAIController"), *(ControlledTank->GetName()))
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("There is a tank not possessed by TankAIController"))
-	}
+
 }
 //TODO Tick(float) Never being called
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//move 
+	auto PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	MoveToActor(PlayerTank, AcceptanceRadius);
 	GetControlledTank()->AimAt(GetPlayerTankLocation());
 }
 ATank* ATankAIController::GetControlledTank() const

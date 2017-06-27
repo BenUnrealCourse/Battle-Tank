@@ -8,14 +8,7 @@
 void ATankPlayerController::BeginPlay()
 {
 	ATank* PossessedTank = GetControlledTank();
-	if (PossessedTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s is possessed by the player"), *(PossessedTank->GetName()))
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("No tank possessed by the player"))
-	}
+
 	
 }
 
@@ -59,7 +52,6 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) cons
 bool ATankPlayerController::GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation, FVector& OutLookDirection) const
 {
 	FVector2D(ViewportSizeX * CrosshairXLocation, ViewportSizeY * CrosshairYLocation);
-	//UE_LOG(LogTemp, Warning, TEXT("Crosshair screen´s position : %s"), *ScreenLocation.ToString())
 	//"De-Project"screen position of crosshair to game world
 	FVector WorldLocation; //To be discarded : Camera´s position
 	bool bDeprojectionSuccesful = DeprojectScreenPositionToWorld(
@@ -83,7 +75,6 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector& LookDirection, FHi
 	);
 	if (bLineTraceSuccess)
 	{
-		//UE_LOG(LogTemp,Warning,TEXT("Crosshair Hit Location : %s"),*(OutHit.Location.ToString()))
 	}
 	return bLineTraceSuccess;
 }

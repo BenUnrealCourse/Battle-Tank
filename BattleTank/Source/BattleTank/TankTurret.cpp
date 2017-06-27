@@ -10,7 +10,6 @@ void UTankTurret::Rotate(float RelativeSpeed)
 	auto NewAzimuth = RelativeRotation.Yaw + AzimuthChange;
 	auto NewAzimuthClamped = FMath::Clamp<float>(NewAzimuth, MinAzimuthDegree, MaxAzimuthDegree);
 	SetRelativeRotation(FRotator(0, NewAzimuthClamped, 0));
-	//UE_LOG(LogTemp,Warning,TEXT("Azimuth Clamped: %s"), *(RelativeRotation.ToString()))
 
 }
 

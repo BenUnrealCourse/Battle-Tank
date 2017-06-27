@@ -27,4 +27,7 @@ public:
 protected:
 
 	FVector GetPlayerTankLocation();
+
+	//How close can the AI Tank approach until stop
+	float AcceptanceRadius = 3000;
 };
