@@ -12,7 +12,6 @@ void UTankTrack::Accelerate(float Throttle)
 	TankRoot->AddForceAtLocation(Force, ForceLocation);
 
 	auto Velocity = (GetOwner()->GetVelocity()) * 0.036;
-	UE_LOG(LogTemp, Warning, TEXT("Velocity : %s km/h"), *(Velocity.ToString()))
 
 }
 
