@@ -49,13 +49,13 @@ void ATank::SetTurretReference(UTankTurret * TurretToSet)
 
 void ATank::Fire()
 {
-	UE_LOG(LogTemp,Warning,TEXT("%s is Firing!"),*(GetName()))
+	//UE_LOG(LogTemp,Warning,TEXT("%s is Firing!"),*(GetName()))
 	if (!Barrel) { return; }
 	//Spawn Projectile
 	GetWorld()->SpawnActor<AProjectile>(
 		ProjectileBlueprint,
 		Barrel->GetSocketLocation(FName("Projectile")),
-		FRotator(0)
+		Barrel->GetForwardVector().Rotation()
 		);
 }
 
