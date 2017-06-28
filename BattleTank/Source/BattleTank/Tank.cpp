@@ -33,7 +33,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::AimAt(FVector HitLocation)
 {
-	TankAimingComponent->AimAt(HitLocation, TossSpeed);
+	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 
 }
 
@@ -59,8 +59,12 @@ void ATank::Fire()
 			Barrel->GetSocketLocation(FName("Projectile")),
 			Barrel->GetForwardVector().Rotation()
 			);
-		Projectile->LaunchProjectile(TossSpeed);
+		Projectile->LaunchProjectile(LaunchSpeed);
 		LastTimeFire = GetWorld()->GetTimeSeconds();
+
+	}
+	else
+	{
 	}
 }
 

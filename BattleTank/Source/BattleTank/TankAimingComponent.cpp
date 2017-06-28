@@ -38,18 +38,18 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation,float TossSpeed)
+void UTankAimingComponent::AimAt(FVector HitLocation,float LaunchSpeed)
 {
 	if (!Barrel || !Turret ) { return; }
-	FVector OutTossVelocity;
+	FVector OutLaunchVelocity;
 	auto StartLocation = Barrel->GetSocketLocation(FName("Projectile")); //It returns barrel location in case of not finding socket name
 	//Calculate the velocity
 	bool bCalculationSucceded = UGameplayStatics::SuggestProjectileVelocity(
 		this,
-		OutTossVelocity,
+		OutLaunchVelocity,
 		StartLocation,
 		HitLocation,
-		TossSpeed,
+		LaunchSpeed,
 		false,
 		0,
 		0,
@@ -57,10 +57,11 @@ void UTankAimingComponent::AimAt(FVector HitLocation,float TossSpeed)
 	);
 	if (bCalculationSucceded)
 	{
-		auto AimDirection = OutTossVelocity.GetSafeNormal();
+		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(AimDirection);
 		MoveTurretTowards(AimDirection); // TODO Fix: Turret and barrel trembles when crosshair is near barrel
 		auto Time = GetWorld()->GetTimeSeconds();
+
 	}
 	else
 	{

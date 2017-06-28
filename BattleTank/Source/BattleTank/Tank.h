@@ -22,7 +22,7 @@ public:
 	ATank();
 
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
-	float TossSpeed = 10000; //TODO Find ideal speed after tweaking
+	float LaunchSpeed = 10000;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -47,9 +47,10 @@ protected:
 
 	UTankBarrel* Barrel = nullptr;
 
+	UPROPERTY(BlueprintReadOnly, Category = Setup)
 	UTankAimingComponent* TankAimingComponent = nullptr;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category= Setup)
 	UTankMovementComponent* TankMovementComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
