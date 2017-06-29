@@ -7,9 +7,7 @@
 
 void ATankPlayerController::BeginPlay()
 {
-	ATank* PossessedTank = GetControlledTank();
-
-	
+	Super::BeginPlay(); //Needed for BeginPlay of BP to run
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -26,7 +24,8 @@ void ATankPlayerController::AimTowardsCrosshair()
 {
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation))
-	{
+	{	
+		if (!GetControlledTank()) { return; }
 		GetControlledTank()->AimAt(HitLocation);
 	}
 }
