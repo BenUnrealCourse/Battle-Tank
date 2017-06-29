@@ -54,11 +54,13 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	}
 	
 }
+
 bool UTankAimingComponent::IsBarrelMoving()
 {
 	auto BarrelCurrentDirection = Barrel->GetForwardVector().GetSafeNormal();
 	return !BarrelCurrentDirection.Equals(AimDirection, 0.01);
 }
+
 void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	if (!Barrel || !Turret ) { return; }

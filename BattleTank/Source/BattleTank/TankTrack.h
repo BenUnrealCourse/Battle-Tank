@@ -21,4 +21,12 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	float MaxDrivingForce = 19000000;
+
+	UTankTrack();
+
+	void BeginPlay() override;
+
+	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UStaticMeshComponent* TankRoot = nullptr;
 };
