@@ -47,7 +47,7 @@ protected:
 	void MoveTurretTowards(FVector AimDirection);
 
 	UPROPERTY(BlueprintReadOnly, Category= State)
-	EFiringState FiringState = EFiringState::Aiming;
+	EFiringState FiringState = EFiringState::Reloading;
 
 	UPROPERTY(EditDefaultsOnly, Category = Setup)
 	float LaunchSpeed = 4000;
@@ -57,6 +57,9 @@ protected:
 
 	float LastTimeFire;
 	
+	bool IsBarrelMoving();
+
+	FVector AimDirection;
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

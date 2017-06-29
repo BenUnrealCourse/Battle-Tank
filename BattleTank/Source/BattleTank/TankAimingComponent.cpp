@@ -39,9 +39,26 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	bool isReloaded = (GetWorld()->GetTimeSeconds() - LastTimeFire) < TimeToReloadInSeconds;
+	if (isReloaded)
+	{
+		FiringState = EFiringState::Reloading;
+	}
+	else if (IsBarrelMoving())
+	{
+		FiringState = EFiringState::Aiming;
+	}
+	else
+	{
+		FiringState = EFiringState::Locked;
+	}
+	
 }
-
+bool UTankAimingComponent::IsBarrelMoving()
+{
+	auto BarrelCurrentDirection = Barrel->GetForwardVector().GetSafeNormal();
+	return !BarrelCurrentDirection.Equals(AimDirection, 0.01);
+}
 void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	if (!Barrel || !Turret ) { return; }
@@ -61,7 +78,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	);
 	if (bCalculationSucceded)
 	{
-		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(AimDirection);
 		MoveTurretTowards(AimDirection); // TODO Fix: Turret and barrel trembles when crosshair is near barrel
 		auto Time = GetWorld()->GetTimeSeconds();
@@ -99,8 +116,9 @@ void UTankAimingComponent::MoveTurretTowards(FVector AimDirection)
 void UTankAimingComponent::Fire()
 {
 	if (!ensure(Barrel)) { return; }
-	bool isReloaded = (GetWorld()->GetTimeSeconds() - LastTimeFire) > TimeToReloadInSeconds;
-	if (isReloaded)
+	if (!ensure(ProjectileBlueprint)) { return; }
+	
+	if (FiringState == EFiringState::Locked)
 	{
 		//Spawn Projectile
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
@@ -110,6 +128,7 @@ void UTankAimingComponent::Fire()
 			);
 		Projectile->LaunchProjectile(LaunchSpeed);
 		LastTimeFire = GetWorld()->GetTimeSeconds();
+		FiringState = EFiringState::Reloading;
 	}
 
 }
