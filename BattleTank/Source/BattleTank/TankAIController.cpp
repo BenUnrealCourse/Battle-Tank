@@ -4,7 +4,7 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Tank.h"
-
+//Depends on Movement Component indirectly via pathfinding logic of MoveToActor
 
 ATankAIController::ATankAIController()
 {

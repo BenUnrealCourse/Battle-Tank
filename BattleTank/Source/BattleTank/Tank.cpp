@@ -5,24 +5,25 @@
 #include "TankBarrel.h"
 #include "Projectile.h"
 #include "Engine/World.h"
-#include "TankMovementComponent.h"
 
 // Called when the game starts or when spawned
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
+	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
 }
 
 void ATank::AimAt(FVector HitLocation)
 {
-	if (!TankAimingComponent) { return; }
+	if (!ensure(TankAimingComponent)) { return; }
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 
 }
 void ATank::Fire()
 {
+	if (!ensure(Barrel)) { return; }
 	bool isReloaded = (GetWorld()->GetTimeSeconds() - LastTimeFire) > TimeToReloadInSeconds;
-	if (Barrel && isReloaded)
+	if (isReloaded)
 	{
 		//Spawn Projectile
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
