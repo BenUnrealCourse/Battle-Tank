@@ -6,8 +6,9 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
-
-class ATank; //Forward Declaration
+//Forward Declarations
+class ATank; 
+class UTankAimingComponent;
 /**
  * 
  */
@@ -27,6 +28,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	float LineTraceMaxReach = 1000000.f;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = Setup)
+		void AimingComponentFound(UTankAimingComponent* AimingComponent); //Event must be called bot must not be implemented
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -45,4 +48,5 @@ private:
 
 	bool GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation, FVector& LookDirection) const;
 
+	
 };

@@ -44,7 +44,7 @@ protected:
 	void MoveTurretTowards(FVector AimDirection);
 
 	UPROPERTY(BlueprintReadOnly, Category= State)
-	EFiringState FiringState = EFiringState::Reloading;
+	EFiringState FiringState = EFiringState::Aiming;
 	
 public:	
 	// Called every frame
