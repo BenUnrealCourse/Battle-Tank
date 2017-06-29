@@ -7,7 +7,7 @@
 #include "TankPlayerController.generated.h"
 
 //Forward Declarations
-class ATank; 
+
 class UTankAimingComponent;
 /**
  * 
@@ -17,9 +17,6 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
-	
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	ATank * GetControlledTank() const;
 
 	virtual void BeginPlay() override;
 
@@ -29,7 +26,7 @@ public:
 	float LineTraceMaxReach = 1000000.f;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Setup)
-		void AimingComponentFound(UTankAimingComponent* AimingComponent); //Event must be called bot must not be implemented
+	void AimingComponentFound(UTankAimingComponent* AimingComponent); //Event must be called bot must not be implemented
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -48,5 +45,5 @@ private:
 
 	bool GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation, FVector& LookDirection) const;
 
-	
+	UTankAimingComponent* AimingComponent = nullptr;
 };

@@ -6,7 +6,7 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
-class ATank;
+class UTankAimingComponent;
 /**
  * 
  */
@@ -21,8 +21,6 @@ public:
 	void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
-
-	ATank* GetControlledTank() const;
 	
 protected:
 
@@ -30,4 +28,6 @@ protected:
 
 	//How close can the AI Tank approach until stop
 	float AcceptanceRadius = 3000;
+
+	UTankAimingComponent* AimingComponent = nullptr;
 };

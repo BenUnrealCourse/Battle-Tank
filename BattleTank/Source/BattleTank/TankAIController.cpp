@@ -3,7 +3,7 @@
 #include "TankAIController.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
-#include "Tank.h"
+#include "TankAimingComponent.h"
 //Depends on Movement Component indirectly via pathfinding logic of MoveToActor
 
 ATankAIController::ATankAIController()
@@ -15,24 +15,22 @@ void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	auto ControlledTank = GetControlledTank();
+	
+	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 
 }
 //TODO Tick(float) Never being called
 void ATankAIController::Tick(float DeltaTime)
 {
+	if (!ensure(AimingComponent)) { return; }
 	Super::Tick(DeltaTime);
 	//move 
-	auto PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	auto PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
 	MoveToActor(PlayerTank, AcceptanceRadius);
-	GetControlledTank()->AimAt(GetPlayerTankLocation());
-	//Fire
-	GetControlledTank()->Fire();
+	AimingComponent->AimAt(GetPlayerTankLocation());
+	AimingComponent->Fire();
 }
-ATank* ATankAIController::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
-}
+
 
 FVector ATankAIController::GetPlayerTankLocation()
 {
