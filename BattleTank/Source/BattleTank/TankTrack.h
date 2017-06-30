@@ -26,8 +26,6 @@ protected:
 
 	void BeginPlay() override;
 
-	//void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 	void ApplySidewaysForce();
 
 	UStaticMeshComponent* TankRoot = nullptr;
