@@ -44,8 +44,6 @@ protected:
 
 	void MoveBarrelTowards(FVector AimDirection);
 
-	void MoveTurretTowards(FVector AimDirection);
-
 	UPROPERTY(BlueprintReadOnly, Category= State)
 	EFiringState FiringState = EFiringState::Reloading;
 
