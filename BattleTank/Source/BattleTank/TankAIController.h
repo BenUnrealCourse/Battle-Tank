@@ -27,7 +27,8 @@ protected:
 	FVector GetPlayerTankLocation();
 
 	//How close can the AI Tank approach until stop
-	float AcceptanceRadius = 3000;
+	UPROPERTY(EditAnywhere, Category= Setup)
+	float AcceptanceRadius = 8000;
 
 	UTankAimingComponent* AimingComponent = nullptr;
 };

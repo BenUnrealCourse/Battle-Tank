@@ -85,9 +85,6 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 		auto Time = GetWorld()->GetTimeSeconds();
 
 	}
-	else
-	{
-	}
 	
 }
 
@@ -129,4 +126,9 @@ void UTankAimingComponent::Fire()
 		FiringState = EFiringState::Reloading;
 	}
 
+}
+
+EFiringState UTankAimingComponent::GetFiringState() const
+{
+	return FiringState;
 }
