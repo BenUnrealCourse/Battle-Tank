@@ -1,40 +1,53 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankTrack.h"
+#include "Engine/World.h"
 
 
 UTankTrack::UTankTrack()
 {
 
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
+	OnComponentHit.AddDynamic(this,&UTankTrack::OnHit);
 }
 
 void UTankTrack::BeginPlay()
 {
 	TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent()); // Cast to access mass and calculate force
+	
 }
 
-void UTankTrack::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
+void UTankTrack::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
+{
+	DriveTrack();
+	ApplySidewaysForce();
+	CurrentThrottle = 0;
+}
+
+void UTankTrack::ApplySidewaysForce()
 {
 	if (!ensure(TankRoot)) { return; }
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	auto SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
-	auto CorrectionAcceleration = -SlippageSpeed / DeltaTime * GetRightVector();
-	
-	auto CorrectionForce = (TankRoot->GetMass() * CorrectionAcceleration) / 2; //Two Tracks
+	auto SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity()); //  1 * |ComponentVelocity| * Cos@  -> cm/s
+	auto DeltaTime = GetWorld()->GetDeltaSeconds();
+	auto CorrectionAcceleration = -(SlippageSpeed / DeltaTime) * GetRightVector(); // a = speed / time -> cm/s²
+	auto CorrectionForce = (TankRoot->GetMass() * CorrectionAcceleration) / 2; // F = m * a ...(Each Track will apply same amount of force)
 	TankRoot->AddForce(CorrectionForce);
 }
 
-void UTankTrack::Accelerate(float Throttle)
+
+void UTankTrack::SetThrottle(float Throttle)
 {
-	Throttle = FMath::Clamp<float>(Throttle, -1, 1);
-	auto Force = GetForwardVector() * Throttle * MaxDrivingForce;
+	CurrentThrottle = FMath::Clamp<float>(Throttle, -1, 1);
+
+}
+
+void UTankTrack::DriveTrack()
+{
+	auto ForceIntensity = GetForwardVector() * CurrentThrottle * MaxDrivingForce;
 	auto ForceLocation = GetComponentLocation();
 	auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
-	TankRoot->AddForceAtLocation(Force, ForceLocation);
+	TankRoot->AddForceAtLocation(ForceIntensity, ForceLocation);
 
-	auto Velocity = (GetOwner()->GetVelocity()) * 0.036;
-
+	auto VelocityInKmPerHour = (GetComponentVelocity()) * 0.036;
 }
 

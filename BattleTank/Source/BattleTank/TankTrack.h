@@ -16,7 +16,7 @@ class BATTLETANK_API UTankTrack : public UStaticMeshComponent
 	
 public:
 	UFUNCTION(BlueprintCallable)
-	void Accelerate(float Throttle);
+	void SetThrottle(float Throttle);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -26,7 +26,15 @@ protected:
 
 	void BeginPlay() override;
 
-	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	//void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void ApplySidewaysForce();
 
 	UStaticMeshComponent* TankRoot = nullptr;
+
+private:
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	void DriveTrack();
+	float CurrentThrottle;
 };
