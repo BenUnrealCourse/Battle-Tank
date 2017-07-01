@@ -55,20 +55,21 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category= State)
 	EFiringState FiringState = EFiringState::Reloading;
 
-	UPROPERTY(EditDefaultsOnly, Category = Setup)
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	float LaunchSpeed = 4000;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category= Firing)
 	float TimeToReloadInSeconds = 3;
 
+	UPROPERTY(EditDefaultsOnly, Category= Firing)
+	int32 MaxAmmo = 5;
+	
 	float LastTimeFire;
 	
 	bool IsBarrelMoving();
 
 	FVector AimDirection;
 
-	UPROPERTY(EditDefaultsOnly)
-	int32 MaxAmmo = 5;
 
 private:
 	// Sets default values for this component's properties
