@@ -19,8 +19,12 @@ AProjectile::AProjectile()
 	CollisionMesh->SetNotifyRigidBodyCollision(true); //set Simulation Generates Hit Events on blueprint automatically
 	CollisionMesh->SetVisibility(false);
 
-	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("LaunchBlast"));
-	LaunchBlast->AttachToComponent(CollisionMesh, FAttachmentTransformRules(EAttachmentRule::KeepRelative,true));
+	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Launch Blast"));
+	LaunchBlast->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative,true));
+
+	ImpactBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Impact Blast"));
+	ImpactBlast->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+	ImpactBlast->bAutoActivate = false;
 
 }
 
@@ -29,6 +33,15 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CollisionMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
+}
+
+void AProjectile::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
+{
+	UE_LOG(LogTemp,Warning,TEXT("ON HIT PROJECTILE"))
+	LaunchBlast->Deactivate();
+	ImpactBlast->Activate();
+
 }
 
 // Called every frame
