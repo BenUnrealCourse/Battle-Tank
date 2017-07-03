@@ -4,6 +4,9 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "PhysicsEngine/RadialForceComponent.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -26,6 +29,9 @@ AProjectile::AProjectile()
 	ImpactBlast->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 	ImpactBlast->bAutoActivate = false;
 
+	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("Explosion Force"));
+	ExplosionForce->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+
 }
 
 // Called when the game starts or when spawned
@@ -38,17 +44,26 @@ void AProjectile::BeginPlay()
 
 void AProjectile::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
 {
-	UE_LOG(LogTemp,Warning,TEXT("ON HIT PROJECTILE"))
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
+	ExplosionForce->FireImpulse();
+	//Avoid projectiles stacking. 
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
+	//Avoid memory leaks
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(
+		TimerHandle,
+		this,
+		&AProjectile::OnTimerExpire,
+		DestroyDelay
+	);
 
 }
 
-// Called every frame
-void AProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+void AProjectile::OnTimerExpire()
+{	
+	Destroy();
 }
 
 void AProjectile::LaunchProjectile(float Speed)
