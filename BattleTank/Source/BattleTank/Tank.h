@@ -25,9 +25,11 @@ protected:
 	int32 StartingHealth = 100;
 
 	UPROPERTY(VisibleAnywhere, Category = Health)
-	int32 CurrentHealth = StartingHealth;
+	int32 CurrentHealth ;
 private:
 	ATank();
+	void BeginPlay() override;
+
 	float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 };

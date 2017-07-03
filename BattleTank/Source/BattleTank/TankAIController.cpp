@@ -39,10 +39,6 @@ FVector ATankAIController::GetPlayerTankLocation()
 	return GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 }
 
-void ATankAIController::OnPossessedTankDeath()
-{
-	UE_LOG(LogTemp,Warning,TEXT("%s died!"), *(GetPawn()->GetName()))
-}
 
 void ATankAIController::SetPawn(APawn * InPawn)
 {
@@ -54,4 +50,9 @@ void ATankAIController::SetPawn(APawn * InPawn)
 		if (!ensure(PossessedTank)) { return; }
 		PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::OnPossessedTankDeath);
 	}
+}
+void ATankAIController::OnPossessedTankDeath()
+{
+	if (!GetPawn()) { return; }
+	GetPawn()->DetachFromControllerPendingDestroy();
 }
