@@ -4,6 +4,7 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
 //Depends on Movement Component indirectly via pathfinding logic of MoveToActor
 
 ATankAIController::ATankAIController()
@@ -11,6 +12,7 @@ ATankAIController::ATankAIController()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
+
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -19,6 +21,7 @@ void ATankAIController::BeginPlay()
 	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 
 }
+
 //TODO Tick(float) Never being called
 void ATankAIController::Tick(float DeltaTime)
 {
@@ -31,10 +34,24 @@ void ATankAIController::Tick(float DeltaTime)
 	AimingComponent->Fire();
 }
 
-
 FVector ATankAIController::GetPlayerTankLocation()
 {
 	return GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 }
 
+void ATankAIController::OnPossessedTankDeath()
+{
+	UE_LOG(LogTemp,Warning,TEXT("%s died!"), *(GetPawn()->GetName()))
+}
 
+void ATankAIController::SetPawn(APawn * InPawn)
+{
+	Super::SetPawn(InPawn);
+	if (InPawn)
+	{
+		//Register for possessed tank delegate
+		auto PossessedTank = Cast<ATank>(InPawn);
+		if (!ensure(PossessedTank)) { return; }
+		PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::OnPossessedTankDeath);
+	}
+}

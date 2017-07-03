@@ -46,4 +46,9 @@ private:
 	bool GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation, FVector& LookDirection) const;
 
 	UTankAimingComponent* AimingComponent = nullptr;
+
+	void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+	void OnPossessedTankDeath();
 };

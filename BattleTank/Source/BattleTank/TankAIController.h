@@ -31,4 +31,10 @@ protected:
 	float AcceptanceRadius = 8000;
 
 	UTankAimingComponent* AimingComponent = nullptr;
+
+	UFUNCTION()
+	void OnPossessedTankDeath();
+
+private:
+	void SetPawn(APawn* InPawn) override;
 };
