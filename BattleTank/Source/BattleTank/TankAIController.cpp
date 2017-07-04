@@ -22,7 +22,6 @@ void ATankAIController::BeginPlay()
 
 }
 
-//TODO Tick(float) Never being called
 void ATankAIController::Tick(float DeltaTime)
 {
 	if (!ensure(AimingComponent)) { return; }
