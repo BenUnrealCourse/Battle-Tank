@@ -39,11 +39,9 @@ private:
 	void AimTowardsCrosshair();
 
 	//Return an OUT param, true if it hit landscape
-	bool GetSightRayHitLocation(FVector& HitLocation) const;
+	bool DidLineTraceHitSomething(FVector& HitLocation) const;
 
-	bool GetLookVectorHitLocation(FVector &LookDirection, FHitResult &Hit) const;
-
-	bool GetLookDirection(const int32 &ViewportSizeX, const int32 &ViewportSizeY, FVector2D &ScreenLocation, FVector& LookDirection) const;
+	void GetCrosshairDirection(FVector& LookDirection) const;
 
 	UTankAimingComponent* AimingComponent = nullptr;
 

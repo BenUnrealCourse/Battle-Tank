@@ -42,6 +42,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category= Setup)
 	int32 GetRemainingAmmo() const;
+
+	FVector GetProjectileInitialLocation() const;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

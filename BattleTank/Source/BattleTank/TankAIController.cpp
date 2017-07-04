@@ -13,33 +13,7 @@ ATankAIController::ATankAIController()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
-void ATankAIController::BeginPlay()
-{
-	Super::BeginPlay();
-	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	
-	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
-
-}
-
-void ATankAIController::Tick(float DeltaTime)
-{
-	if (!ensure(AimingComponent)) { return; }
-	Super::Tick(DeltaTime);
-	//move 
-	auto PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
-	if (!ensure(PlayerTank)) { return; }
-	MoveToActor(PlayerTank, AcceptanceRadius);
-	AimingComponent->AimAt(GetPlayerTankLocation());
-	AimingComponent->Fire();
-}
-
-FVector ATankAIController::GetPlayerTankLocation()
-{
-	return GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-}
-
-
+//Called by the engine when setting pawn
 void ATankAIController::SetPawn(APawn * InPawn)
 {
 	Super::SetPawn(InPawn);
@@ -51,6 +25,55 @@ void ATankAIController::SetPawn(APawn * InPawn)
 		PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::OnPossessedTankDeath);
 	}
 }
+
+void ATankAIController::BeginPlay()
+{
+	Super::BeginPlay();
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	
+	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+
+}
+
+//Called by the engine every frame
+void ATankAIController::Tick(float DeltaTime)
+{
+	if (!ensure(AimingComponent)) { return; }
+	Super::Tick(DeltaTime);
+
+	AimingComponent->AimAt(GetPlayerTankLocation());
+
+	//move if tank player controller has a pawn attached
+	auto PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
+	if (!ensure(PlayerTank)) { return; }
+	MoveToActor(PlayerTank, AcceptanceRadius);
+
+	//TODO Only Fire if sees player´s tank
+	FHitResult Hit;
+	auto DirectionBetweenPoints = (GetPlayerTankLocation() - AimingComponent->GetProjectileInitialLocation()).Rotation().Vector();
+	auto EndTrace = AimingComponent->GetProjectileInitialLocation() + DirectionBetweenPoints * 100000;
+	auto bHitSomething = GetWorld()->LineTraceSingleByChannel(
+		Hit,
+		AimingComponent->GetProjectileInitialLocation(),
+		EndTrace,
+		ECollisionChannel::ECC_Visibility
+	);
+	if (bHitSomething)
+	{
+		if (Cast<ATank>(Hit.GetActor()))
+		{
+			AimingComponent->Fire();
+		}
+	}
+
+}
+
+FVector ATankAIController::GetPlayerTankLocation()
+{
+	if (!GetWorld()->GetFirstPlayerController()->GetPawn()) { return FVector(0);  }
+	return GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+}
+
 void ATankAIController::OnPossessedTankDeath()
 {
 	if (!GetPawn()) { return; }

@@ -56,7 +56,6 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	{
 		FiringState = EFiringState::Locked;
 	}
-	
 }
 
 bool UTankAimingComponent::IsBarrelMoving()
@@ -152,4 +151,9 @@ EFiringState UTankAimingComponent::GetFiringState() const
 int32 UTankAimingComponent::GetRemainingAmmo() const
 {
 	return MaxAmmo - Shots;
+}
+
+FVector UTankAimingComponent::GetProjectileInitialLocation() const
+{
+	return Barrel->GetSocketLocation(FName("Projectile"));
 }

@@ -34,7 +34,6 @@ void UTankTrack::ApplySidewaysForce()
 	TankRoot->AddForce(CorrectionForce);
 }
 
-
 void UTankTrack::SetThrottle(float Throttle)
 {
 	CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1, 1);

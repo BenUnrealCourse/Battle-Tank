@@ -73,15 +73,16 @@ void AProjectile::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor,
 
 }
 
-void AProjectile::OnTimerExpire()
-{	
-	Destroy();
-}
-
 void AProjectile::LaunchProjectile(float Speed)
 {
 	if (!ensure(ProjectileMovementComponent)) { return; }
 	ProjectileMovementComponent->SetVelocityInLocalSpace(FVector::ForwardVector * Speed);
 	ProjectileMovementComponent->Activate();
 }
+
+void AProjectile::OnTimerExpire()
+{	
+	Destroy();
+}
+
 
